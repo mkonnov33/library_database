@@ -111,14 +111,14 @@ def add_reservation(book_id, account_id, library_id):
 #region Get things
 def get_accounts():
     con, cur = connect()
-    cur.execute("SELECT username, password, employee, FROM accounts")
+    cur.execute("SELECT * FROM accounts")
     accounts = cur.fetchall()
     con.close()
     return accounts
 
 def get_authors():
     con, cur = connect()
-    cur.execute("SELECT first_name, last_name, date_of_birth FROM authors")
+    cur.execute("SELECT * FROM authors")
     authors = cur.fetchall()
     con.close()
     return authors
@@ -126,19 +126,20 @@ def get_authors():
 def get_books():
     con, cur = connect()
     cur.execute('''SELECT
-                    name,
+                    books.id,
+                    books.name,
                     authors.first_name,
                     authors.last_name,
                     release_date,
                     genres.name,
                     featured_in_event,
-                    events.name,
+                    events.name
                    FROM books
                    JOIN authors
                        ON books.author_id = authors.id
-                   JOIN genres
+                   LEFT JOIN genres
                        ON books.genre_id = genres.id
-                   JOIN events
+                   LEFT JOIN events
                        ON books.event_id = events.id''')
     books = cur.fetchall()
     con.close()
@@ -147,6 +148,7 @@ def get_books():
 def get_employees():
     con, cur = connect()
     cur.execute('''SELECT
+                    employees.id, 
                     first_name,
                     last_name,
                     age,
@@ -154,7 +156,7 @@ def get_employees():
                     libraries.address,
                     accounts.username,
                     position.name,
-                    position.salary,
+                    position.salary
                    FROM employees
                    JOIN libraries
                        ON employees.library_id = library.id
@@ -169,25 +171,23 @@ def get_employees():
 def get_events():
     con, cur = connect()
     cur.execute('''SELECT
+                    events.id,
                     libraries.name,
-                    libraries,address,
-                    name,
+                    libraries.address,
+                    events.name,
                     starting_date,
                     ending_date,
-                    active,
+                    active
                    FROM events
                    JOIN libraries
-                       ON events.library_id = library.id''')
+                       ON events.library_id = libraries.id''')
     events = cur.fetchall()
     con.close()
     return events
 
 def get_genres():
     con, cur = connect()
-    cur.execute('''SELECT
-                    name,
-                    description,
-                   FROM genres''')
+    cur.execute('''SELECT * FROM genres''')
     genres = cur.fetchall()
     con.close()
     return genres
@@ -195,12 +195,13 @@ def get_genres():
 def get_leaves():
     con, cur = connect()
     cur.execute('''SELECT
+                    leaves.id,
                     employees.first_name,
                     employees.last_name,
                     paid,
                     cause,
                     start_date,
-                    end_date,
+                    end_date
                    FROM leaves
                    JOIN employees
                        ON leaves.employee_id = employees.id''')
@@ -210,21 +211,14 @@ def get_leaves():
 
 def get_libraries():
     con, cur = connect()
-    cur.execute('''SELECT
-                    name,
-                    address,
-                   FROM libraries''')
+    cur.execute('''SELECT * FROM libraries''')
     libraries = cur.fetchall()
     con.close()
     return libraries
 
 def get_positions():
     con, cur = connect()
-    cur.execute('''SELECT
-                    name,
-                    available,
-                    salary,
-                   FROM positions''')
+    cur.execute('''SELECT * FROM positions''')
     positions = cur.fetchall()
     con.close()
     return positions
@@ -232,6 +226,7 @@ def get_positions():
 def get_reservations():
     con, cur = connect()
     cur.execute('''SELECT
+                    reservations.id,
                     accounts.username,
                     libraries.name,
                     libraries.address,
@@ -239,7 +234,7 @@ def get_reservations():
                     authors.first_name,
                     authors.last_name,
                     books.release_date,
-                    genres.name,
+                    genres.name
                    FROM reservations
                    JOIN books
                        ON reservations.book_id = books.id
@@ -250,4 +245,63 @@ def get_reservations():
     reservations = cur.fetchall()
     con.close()
     return reservations
+#endregion
+
+#region List things
+def account_list():
+    print("\nList of accounts")
+    for account in get_accounts():
+        print(account)
+
+def author_list():
+    print("\nList of authors")
+    for author in get_authors():
+        print(author)
+
+def book_list():
+    print("\nList of books:")
+    for book in get_books():
+        book_id, book_name, author_first, author_last, release_date, genre, is_featured, event_name = book
+        
+        is_featured = bool(is_featured)
+        
+        if (is_featured):
+            print(f"ID: {book_id} | Title: {book_name} | Author: {author_first} {author_last} | Released: {release_date} | Genre: {genre} | Featured in {event_name}")
+        else:
+            print(f"ID: {book_id} | Title: {book_name} | Author: {author_first} {author_last} | Released: {release_date} | Genre: {genre}")
+
+def employee_list():
+    print("\nList of employees")
+    for employee in get_employees():
+        print(employee)
+
+def event_list():
+    print("\nList of events")
+    for event in get_events():
+        print(event)
+
+def genre_list():
+    print("\nList of genres")
+    for genre in get_genres():
+        print(genre)
+
+def leave_list():
+    print("\nList of leaves")
+    for leave in get_leaves():
+        print(leave)
+
+def library_list():
+    print("\nList of libraries")
+    for library in get_libraries():
+        print(library)
+
+def position_list():
+    print("\nList of positions")
+    for position in get_positions():
+        print(position)
+
+def reservation_list():
+    print("\nList of reservations")
+    for reservation in get_reservations():
+        print(reservation)
 #endregion
