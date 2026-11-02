@@ -44,17 +44,6 @@ while True:
             print("\n 9. - Add a position")
             print("\n 10. - Add a reservation")
             print("\n 0. - Back")
-            print("\n 1. - Add an account")
-            print("\n 2. - Add an author")
-            print("\n 3. - Add a book")
-            print("\n 4. - Add an employee")
-            print("\n 5. - Add an event")
-            print("\n 6. - Add a genre")
-            print("\n 7. - Add a leave")
-            print("\n 8. - Add a library")
-            print("\n 9. - Add a position")
-            print("\n 10. - Add a reservation")
-            print("\n 0. - Back")
 
             choice = input("\nChoose: ")
 
