@@ -159,8 +159,11 @@ def get_employees():
                     accounts.username,
                     positions.name,
                     positions.salary
+                    positions.name,
+                    positions.salary
                    FROM employees
                    JOIN libraries
+                       ON employees.library_id = libraries.id
                        ON employees.library_id = libraries.id
                    JOIN accounts
                        ON employees.account_id = accounts.id
@@ -256,10 +259,17 @@ def account_list():
     for account in get_accounts():
         account_id, username, password, employee = account
         print(f"ID: {account_id} | Username: {username} | Password: {password} | Employee's account: {employee}")
+        account_id, username, password, employee = account
+        print(f"ID: {account_id} | Username: {username} | Password: {password} | Employee's account: {employee}")
 
 def author_list():
     print("\nList of authors")
     for author in get_authors():
+        author_id, first_name, last_name, date_of_birth = author
+        if (date_of_birth != None):
+            print(f"ID: {author_id} | First name: {first_name} | Last name: {last_name} | Date of birth: {date_of_birth}")
+        else:
+            print(f"ID: {author_id} | First name: {first_name} | Last name: {last_name}")
         author_id, first_name, last_name, date_of_birth = author
         if (date_of_birth != None):
             print(f"ID: {author_id} | First name: {first_name} | Last name: {last_name} | Date of birth: {date_of_birth}")
@@ -270,6 +280,7 @@ def book_list():
     print("\nList of books:")
     for book in get_books():
         book_id, book_name, author_first, author_last, release_date, genre, is_featured, event_name = book
+
 
         is_featured = bool(is_featured)
         
@@ -286,10 +297,17 @@ def employee_list():
             print(f"ID: {employee_id} | First name: {first_name} | Last name: {last_name} | Age: {age} | Library: {library_name} {library_address} | Account: {account_username}, | Position: {position_name} {position_salary}")
         else:
             print(f"ID: {employee_id} | First name: {first_name} | Last name: {last_name} | Library: {library_name} {library_address} | Account: {account_username}, | Position: {position_name} {position_salary}")
+        employee_id, first_name, last_name, age, library_name, library_address, account_username, position_name, position_salary = employee
+        if (age != None):
+            print(f"ID: {employee_id} | First name: {first_name} | Last name: {last_name} | Age: {age} | Library: {library_name} {library_address} | Account: {account_username}, | Position: {position_name} {position_salary}")
+        else:
+            print(f"ID: {employee_id} | First name: {first_name} | Last name: {last_name} | Library: {library_name} {library_address} | Account: {account_username}, | Position: {position_name} {position_salary}")
 
 def event_list():
     print("\nList of events")
     for event in get_events():
+        event_id, library_name, library_address, event_name, starting_date, ending_date, active = event
+        print(f"ID: {event_id} | Event name: {event_name} | Library: {library_name} {library_address} | From {starting_date} to {ending_date} | Active: {active}")
         event_id, library_name, library_address, event_name, starting_date, ending_date, active = event
         print(f"ID: {event_id} | Event name: {event_name} | Library: {library_name} {library_address} | From {starting_date} to {ending_date} | Active: {active}")
 
@@ -301,10 +319,17 @@ def genre_list():
             print(f"ID: {genre_id} | Name: {genre_name} | Description: {genre_description}")
         else:
             print(f"ID: {genre_id} | Name: {genre_name}")
+        genre_id, genre_name, genre_description = genre
+        if (genre_description != None):
+            print(f"ID: {genre_id} | Name: {genre_name} | Description: {genre_description}")
+        else:
+            print(f"ID: {genre_id} | Name: {genre_name}")
 
 def leave_list():
     print("\nList of leaves")
     for leave in get_leaves():
+        leave_id, employee_first, employee_last, paid, cause, start_date, end_date = leave
+        print(f"ID: {leave_id} | Employee: {employee_first} {employee_last} | Paid?: {paid} | Cause: {cause} | From {start_date} to {end_date}")
         leave_id, employee_first, employee_last, paid, cause, start_date, end_date = leave
         print(f"ID: {leave_id} | Employee: {employee_first} {employee_last} | Paid?: {paid} | Cause: {cause} | From {start_date} to {end_date}")
 
@@ -313,10 +338,17 @@ def library_list():
     for library in get_libraries():
         library_id, library_name, library_address = library
         print(f"ID: {library_id} | Name: {library_name} | Address: {library_address}")
+        library_id, library_name, library_address = library
+        print(f"ID: {library_id} | Name: {library_name} | Address: {library_address}")
 
 def position_list():
     print("\nList of positions")
     for position in get_positions():
+        position_id, position_name, available, salary = position
+        if (salary != None and salary != 0):
+            print(f"ID: {position_id} | Name: {position_name} | Available: {available} | Salary: {salary}")
+        else:
+            print(f"ID: {position_id} | Name: {position_name} | Available: {available}")
         position_id, position_name, available, salary = position
         if (salary != None and salary != 0):
             print(f"ID: {position_id} | Name: {position_name} | Available: {available} | Salary: {salary}")
