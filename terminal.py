@@ -1,5 +1,5 @@
 from funcs import *
-from funcs import *
+from funcs import yeses
 from enum import Enum
 
 class States(Enum):
@@ -8,8 +8,6 @@ class States(Enum):
     GET_DATA_CHOICE = 3
 
 current_state = States.FUNC_CHOICE
-
-yeses = ["true", "yes", "t", "y", "+", "sure", "yeah", "ye", "yup"]
 
 while True:
     match current_state:
@@ -70,9 +68,9 @@ while True:
                     release_date = input("Release date*: ")
                     author_list()
                     author_id = input("Author ID*: ")
-                    author_id = input("Author ID*: ")
                     featured_in_event = input("Featured in event?*: ")
                     if (featured_in_event.lower() in yeses):
+                        featured_in_event = True
                         if (get_events() != []):
                             event_list()
                             event_id = input("Event ID: ")
@@ -97,18 +95,21 @@ while True:
                         library_list()
                         library_id = input("Library ID*: ")
                     else:
-                        library_id = None
+                        print("Something failed somehow\nSetting library_id to 1")
+                        library_id = 1
                     if (get_accounts() != []):
                         account_list()
                         account_id = input("Account ID*: ")
                     else:
-                        account_id = None
+                        print("Something failed somehow\nSetting account_id to 1")
+                        account_id = 1
                     if (get_positions() != []):
                         position_list()
                         position_id = input("Position ID*: ")
                     else:
-                        position_id = None
-                    employee_id = add_employee(first_name, last_name, age, library_id, account_id, position_id)
+                        print("Something failed somehow\nSetting position_id to 1")
+                        position_id = 1
+                    employee_id = add_employee(first_name, last_name, library_id, account_id, position_id, age)
                     print("Employee added. ID:", employee_id)
                 case "5":
                     print("\nAdding an event:")
@@ -121,6 +122,8 @@ while True:
                     starting_date = input("Starting date*: ")
                     ending_date = input("Ending date*: ")
                     active = input("Active*: ")
+                    if (active.lower() in yeses):
+                        active = True
                     event_id = add_event(name, library_id, starting_date, ending_date, active)
                     print("Event added. ID:", event_id)
                 case "6":
@@ -147,11 +150,13 @@ while True:
                     name = input("Name*: ")
                     address = input("Adress*: ")
                     library_id = add_library(name, address)
-                    print("Leave added. ID:", leave_id)
+                    print("Leave added. ID:", library_id)
                 case "9":
                     print("\nAdding a position:")
                     name = input("Name*: ")
                     available = input("Available?*: ")
+                    if (available.lower() in yeses):
+                        available = True
                     salary = input("Salary: ")
                     position_id = add_position(name, available, salary)
                     print("Position added. ID:", position_id)

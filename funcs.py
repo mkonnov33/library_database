@@ -1,5 +1,7 @@
 import sqlite3
 
+yeses = ["true", "yes", "t", "y", "+", "sure", "yeah", "ye", "yup"]
+
 def connect():
     con = sqlite3.connect("library.db")
     cur = con.cursor()
@@ -233,15 +235,16 @@ def get_reservations():
                     books.name,
                     authors.first_name,
                     authors.last_name,
-                    books.release_date,
-                    genres.name
+                    books.release_date
                    FROM reservations
                    JOIN books
                        ON reservations.book_id = books.id
-                    JOIN authors
+                   JOIN authors
                        ON books.author_id = authors.id
-                    JOIN genres
-                       ON books.genres_id = genres.id''')
+                   JOIN accounts
+                       ON reservations.account_id = accounts.id
+                   JOIN libraries
+                       ON reservations.library_id = libraries.id''')
     reservations = cur.fetchall()
     con.close()
     return reservations
@@ -323,6 +326,6 @@ def position_list():
 def reservation_list():
     print("\nList of reservations")
     for reservation in get_reservations():
-        reservation_id, account_username, library_name, library_address, book_name, author_first, author_last, book_release_date, genre_name = reservation
-        print(f"ID: {reservation_id} | Account: {account_username} | Library: {library_name} {library_address} | Book: {book_name} {book_release_date} {genre_name} | Author: {author_first} {author_last}")
+        reservation_id, account_username, library_name, library_address, book_name, author_first, author_last, book_release_date = reservation
+        print(f"ID: {reservation_id} | Account: {account_username} | Library: {library_name} {library_address} | Book: {book_name} {book_release_date} | Author: {author_first} {author_last}")
 #endregion
