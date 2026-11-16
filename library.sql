@@ -103,6 +103,7 @@ CREATE TABLE IF NOT EXISTS "leaves" (
 	"cause" TEXT NOT NULL,
 	"start_date" DATE NOT NULL,
 	"end_date" DATE NOT NULL,
+	"active" BOOLEAN NOT NULL DEFAULT 0,
 	PRIMARY KEY("id"),
 	FOREIGN KEY ("employee_id") REFERENCES "employees"("id")
 	ON UPDATE NO ACTION ON DELETE NO ACTION

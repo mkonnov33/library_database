@@ -1,6 +1,27 @@
+from getpass import getpass
 from funcs import *
-from funcs import yeses
+from funcs import normalize_boolean
 from enum import Enum
+
+def _ask_boolean(prompt):
+    while True:
+        try:
+            return normalize_boolean(input(prompt))
+        except ValueError as error:
+            print(error)
+
+def _ask_date(prompt, required=False):
+    while True:
+        value = input(prompt)
+        if not value.strip() and not required:
+            return None
+        try:
+            normalized = normalize_date(value)
+            if normalized is None:
+                raise ValueError("A date is required.")
+            return normalized
+        except ValueError as error:
+            print(error)
 
 class States(Enum):
     FUNC_CHOICE = 1,
@@ -49,28 +70,25 @@ while True:
                 case "1":
                     print("\nAdding an account:")
                     username = input("Username*: ")
-                    password = input("Password*: ")
-                    employee = bool(input("Employee?: "))
-                    print(employee)
+                    password = getpass("Password*: ")
+                    employee = _ask_boolean("Employee? (Yes/No): ")
                     account_id = add_account(username, password, employee)
                     print("Account added. ID:", account_id)
                 case "2":
                     print("\nAdding an author:")
                     first_name = input("First name*: ")
                     last_name = input("Last name*: ")
-                    date_of_birth = input("Date of birth: ")
-                    author_id = add_author(first_name, last_name, date_of_birth)
+                    date_of_birth = _ask_date("Date of birth: ")
                     author_id = add_author(first_name, last_name, date_of_birth)
                     print("Author added. ID:", author_id)
                 case "3":
                     print("\nAdding a book:")
                     name = input("Name*: ")
-                    release_date = input("Release date*: ")
+                    release_date = _ask_date("Release date*: ", required=True)
                     author_list()
                     author_id = input("Author ID*: ")
-                    featured_in_event = input("Featured in event?*: ")
-                    if (featured_in_event.lower() in yeses):
-                        featured_in_event = True
+                    featured_in_event = _ask_boolean("Featured in event?*: ")
+                    if featured_in_event:
                         if (get_events() != []):
                             event_list()
                             event_id = input("Event ID: ")
@@ -91,24 +109,21 @@ while True:
                     first_name = input("First name*: ")
                     last_name = input("Last name*: ")
                     age = input("Age: ")
-                    if (get_libraries() != []):
-                        library_list()
-                        library_id = input("Library ID*: ")
-                    else:
-                        print("Something failed somehow\nSetting library_id to 1")
-                        library_id = 1
-                    if (get_accounts() != []):
-                        account_list()
-                        account_id = input("Account ID*: ")
-                    else:
-                        print("Something failed somehow\nSetting account_id to 1")
-                        account_id = 1
-                    if (get_positions() != []):
-                        position_list()
-                        position_id = input("Position ID*: ")
-                    else:
-                        print("Something failed somehow\nSetting position_id to 1")
-                        position_id = 1
+                    if not get_libraries():
+                        print("Add a library before adding an employee.")
+                        continue
+                    library_list()
+                    library_id = input("Library ID*: ")
+                    if not get_accounts():
+                        print("Add an account before adding an employee.")
+                        continue
+                    account_list()
+                    account_id = input("Account ID*: ")
+                    if not get_positions():
+                        print("Add a position before adding an employee.")
+                        continue
+                    position_list()
+                    position_id = input("Position ID*: ")
                     employee_id = add_employee(first_name, last_name, library_id, account_id, position_id, age)
                     print("Employee added. ID:", employee_id)
                 case "5":
@@ -119,12 +134,9 @@ while True:
                         library_id = input("Library ID*: ")
                     else:
                         library_id = None
-                    starting_date = input("Starting date*: ")
-                    ending_date = input("Ending date*: ")
-                    active = input("Active*: ")
-                    if (active.lower() in yeses):
-                        active = True
-                    event_id = add_event(name, library_id, starting_date, ending_date, active)
+                    starting_date = _ask_date("Starting date*: ", required=True)
+                    ending_date = _ask_date("Ending date*: ", required=True)
+                    event_id = add_event(name, library_id, starting_date, ending_date)
                     print("Event added. ID:", event_id)
                 case "6":
                     print("\nAdding a genre:")
@@ -139,10 +151,10 @@ while True:
                         employee_id = input("Employee ID*: ")
                     else:
                         employee_id = None
-                    paid = input("Paid?*: ")
+                    paid = _ask_boolean("Paid?*: ")
                     cause = input("Cause*: ")
-                    starting_date = input("Starting date*: ")
-                    ending_date = input("Ending date*: ")
+                    starting_date = _ask_date("Starting date*: ", required=True)
+                    ending_date = _ask_date("Ending date*: ", required=True)
                     leave_id = add_leave(employee_id, paid, cause, starting_date, ending_date)
                     print("Leave added. ID:", leave_id)
                 case "8":
@@ -150,13 +162,11 @@ while True:
                     name = input("Name*: ")
                     address = input("Adress*: ")
                     library_id = add_library(name, address)
-                    print("Leave added. ID:", library_id)
+                    print("Library added. ID:", library_id)
                 case "9":
                     print("\nAdding a position:")
                     name = input("Name*: ")
-                    available = input("Available?*: ")
-                    if (available.lower() in yeses):
-                        available = True
+                    available = _ask_boolean("Available?*: ")
                     salary = input("Salary: ")
                     position_id = add_position(name, available, salary)
                     print("Position added. ID:", position_id)
@@ -180,8 +190,6 @@ while True:
                     reservation_id = add_reservation(book_id, account_id, library_id)
                     print("Reservation added. ID:", reservation_id)
                 case "0":
-                    current_state = States.FUNC_CHOICE
-                    continue
                     current_state = States.FUNC_CHOICE
                     continue
                 case _:
