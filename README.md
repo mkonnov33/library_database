@@ -1,5 +1,7 @@
 # Library Database Manager
 
+<img width="466" height="183" alt="image" src="https://github.com/user-attachments/assets/fc2f9d1d-2bf7-4f21-b807-07792e3cd0d0" />
+
 A small Python application for managing a library database. It includes a
 desktop interface built with Tkinter and a menu-driven command-line interface.
 Both interfaces use SQLite and the local `library.db` database.
